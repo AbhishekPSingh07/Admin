@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import './DataTable.scss'
 import { DataGrid } from '@mui/x-data-grid';
-import {userColumn} from "../../datatableSource"
 import {Link} from 'react-router-dom';
 import { collection,deleteDoc,doc, onSnapshot } from "firebase/firestore";
 import {db} from '../../firebase';
 
 
-function DataTable({title}) {
+function DataTable({title,collect,source}) {
   const[data,setData] = useState([]);
   useEffect(()=>{
   //   let list = []
@@ -20,7 +19,7 @@ function DataTable({title}) {
   //   }
   //   fetchData()
   //Listen
-  const unsub = onSnapshot(collection(db,"user"),(snapShot) =>{
+  const unsub = onSnapshot(collection(db,collect),(snapShot) =>{
       let list=[];
       snapShot.docs.forEach((doc) => {
         list.push({ id: doc.id, ...doc.data() });
@@ -34,11 +33,11 @@ function DataTable({title}) {
     }
       
     
-  },[]);
+  },[collect]);
   
 
   const handleDelete  = async(id)=>{
-    await deleteDoc(doc(db,'user',id));
+    await deleteDoc(doc(db,collect,id));
     setData(data.filter((item) => item.id !== id));
   };
     const actionColumn=[{
@@ -68,7 +67,7 @@ function DataTable({title}) {
       <DataGrid 
         className='datagrid'
         rows={data}
-        columns={userColumn.concat(actionColumn)}
+        columns={source.concat(actionColumn)}
         pageSize={9}
         rowsPerPageOptions={[9]}
         checkboxSelection

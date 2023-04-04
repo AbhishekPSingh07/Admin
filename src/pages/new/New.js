@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-function New({inputs,title}) {
+function New({inputs,title,collect}) {
   const [file,setFile]=useState("");
   const [data,setData]=useState("");
   const [perc,setPerc] = useState(null);
@@ -69,7 +69,7 @@ function New({inputs,title}) {
     e.preventDefault();
     try{
       const res = await createUserWithEmailAndPassword(auth,data.email,data.password);
-      await setDoc(doc(db, "user",res.user.uid), {
+      await setDoc(doc(db,collect,res.user.uid), {
         ...data,
         timestamp : serverTimestamp(),
       });

@@ -15,6 +15,7 @@ import { productInputs, userInputs } from './formSource';
 import { useContext } from 'react';
 import { DarkModeContext } from './context/darkModeContext';
 import { AuthenticationContext } from './context/AuthenticationContext';
+import { productColumn, userColumn } from './datatableSource';
 
 function App() {
 
@@ -23,25 +24,25 @@ function App() {
   const {currentUser} = useContext(AuthenticationContext);
 
   const RequireAuth = ({ children }) => {
-    return currentUser ? (children) : <Navigate to='/login' />;
+    return currentUser ? children : <Navigate to='login' />;
   };
 
   return (
     <div className={darkMode ?"App dark" : "App"}>
       <BrowserRouter>
     <Routes>
-      <Route path="/react_admin">
+      <Route path="/">
       <Route path='login' element={<Login/>}/>
         <Route index element={<RequireAuth><Home/></RequireAuth>} />
-        <Route path='users'>
-          <Route index element={<RequireAuth><List title="Add New User" /></RequireAuth>}/>
+        <Route path='/users'>
+          <Route index element={<RequireAuth><List source={userColumn} title="Add New User" collect="user"/></RequireAuth>}/>
           <Route path=':userId'element={<RequireAuth><Single/></RequireAuth>}/>
-          <Route path='new' element={<RequireAuth><New inputs ={userInputs} title="Add New User"/></RequireAuth>}/>
+          <Route path='new' element={<RequireAuth><New collect="user"inputs ={userInputs} title="Add New User"/></RequireAuth>}/>
         </Route>
-        <Route path='products'>
-          <Route index element={<RequireAuth><List title="Add New Product" /></RequireAuth>}/>
+        <Route path='/products'>
+          <Route index element={<RequireAuth><List title="Add New Product" source={productColumn} collect="product"/></RequireAuth>}/>
           <Route path=':productId'element={<RequireAuth><Single/></RequireAuth>}/>
-          <Route path='new' element={<RequireAuth><New inputs={productInputs} title="Add New Product"/></RequireAuth>}/>
+          <Route path='new' element={<RequireAuth><New collect="product" inputs={productInputs} title="Add New Product"/></RequireAuth>}/>
         </Route>
       </Route>
     </Routes>
